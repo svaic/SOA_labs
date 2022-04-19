@@ -1,0 +1,78 @@
+swagger: '2.0'
+info:
+  title: Shop Example API
+  version: "0.1"
+  description: Simple example API
+consumes:
+  - application/json
+produces:
+  - application/json
+basePath: "/api"
+paths:
+  /course/:
+    post:
+      tags: [ course ]
+      operationId: app.course_add
+      parameters:
+        - $ref: '#/parameters/course_body'
+      responses:
+        200:
+          description: Return course object
+        404:
+          description: student not found
+
+  /student/{student_id}:
+    get:
+      tags: [ Student ]
+      operationId: app.student_find
+      parameters:
+        - $ref: '#/parameters/student_id'
+      responses:
+        200:
+          description: Return student object
+        404:
+          description: student not found
+  /student/:
+    post:
+      tags: [ Student ]
+      operationId: app.student_add
+      parameters:
+        - $ref: '#/parameters/student_body'
+      responses:
+        200:
+          description: Return status
+        409:
+          description: Already exists
+
+
+
+parameters:
+
+  student_body:
+    name: student_body
+    description: Test1 unique id
+    in: body
+    schema:
+      required:
+        - name
+      properties:
+        name:
+          type: string
+
+  student_id:
+    name: student_id
+    description: The name of the person we're looking for
+    in: path
+    required: true
+    type: string
+
+  course_body:
+    name: course_body
+    description: Test21 unique id
+    in: body
+    schema:
+      required:
+        - name
+      properties:
+        name:
+          type: string
