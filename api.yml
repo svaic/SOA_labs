@@ -9,30 +9,17 @@ produces:
   - application/json
 basePath: "/api"
 paths:
-  /course/:
-    post:
-      tags: [ course ]
-      operationId: app.course_add
-      parameters:
-        - $ref: '#/parameters/course_body'
-      responses:
-        200:
-          description: Return course object
-        404:
-          description: student not found
-
-  /student/{student_id}:
+  /students/:
     get:
-      tags: [ Student ]
-      operationId: app.student_find
-      parameters:
-        - $ref: '#/parameters/student_id'
+      tags: [ Student, all ]
+      operationId: app.get_students
       responses:
         200:
-          description: Return student object
+          description: Return list of students
         404:
-          description: student not found
-  /student/:
+          description: No students found
+
+  /student:
     post:
       tags: [ Student ]
       operationId: app.student_add
@@ -44,35 +31,139 @@ paths:
         409:
           description: Already exists
 
+  /student/{student_id}:
+    get:
+      tags: [ Student, read ]
+      operationId: app.find_student
+      parameters:
+        - $ref: '#/parameters/student_id'
+      responses:
+        200:
+          description: Return student object
+        404:
+          description: student not found
+
+  /student/{student_id}/edit:
+      post:
+        tags: [ Student, edit ]
+        operationId: app.edit_student
+        parameters:
+          - $ref: '#/parameters/student_id'
+          - $ref: '#/parameters/student_body'
+        responses:
+          200:
+            description: Return student object
+          404:
+            description: student not found
+
+  /student/{student_id}/add_course:
+    post:
+      tags: [ course, add ]
+      operationId: app.add_course
+      parameters:
+        - $ref: '#/parameters/student_id'
+        - $ref: '#/parameters/course_body'
+      responses:
+        200:
+          description: Return course object
+        403:
+          description: Error creating course
+
+  /student/{student_id}/delete:
+    post:
+      tags: [ student, delete ]
+      operationId: app.delete_student
+      parameters:
+        - $ref: '#/parameters/student_id'
+      responses:
+        200:
+          description: Return deleted student object
+        404:
+          description: student not found
+
+  /courses/:
+    get:
+      tags: [ course, all ]
+      operationId: app.get_courses
+      responses:
+        200:
+          description: Return all course object
+        404:
+          description: No courses found
+
+  /course/{course_id}:
+      get:
+        tags: [ course, read ]
+        operationId: app.find_course
+        parameters:
+          - $ref: '#/parameters/course_id'
+        responses:
+          200:
+            description: Return course object
+          404:
+            description: Course not found
+
+  /course/{course_id}/edit:
+    post:
+      tags: [ course, edit ]
+      operationId: app.edit_course
+      parameters:
+        - $ref: '#/parameters/course_id'
+        - $ref: '#/parameters/course_body'
+      responses:
+        200:
+          description: Return course object
+        404:
+          description: Course not found
+
+  /course/{course_id}/delete:
+    post:
+      tags: [ course, delete ]
+      operationId: app.delete_course
+      parameters:
+        - $ref: '#/parameters/course_id'
+      responses:
+        200:
+          description: Return course object
+        404:
+          description: Course not found
+
 
 
 parameters:
 
   student_body:
     name: student_body
-    description: Test1 unique id
+    description: parameters required for creation of student
     in: body
     schema:
-      required:
-        - name
       properties:
         name:
           type: string
-
-  student_id:
-    name: student_id
-    description: The name of the person we're looking for
-    in: path
-    required: true
-    type: string
+        surname:
+          type: string
 
   course_body:
     name: course_body
-    description: Test21 unique id
+    description: parameters required for creation of course
     in: body
     schema:
-      required:
-        - name
       properties:
         name:
           type: string
+
+
+  student_id:
+    name: student_id
+    description: The id of the student we're looking for
+    in: path
+    required: true
+    type: integer
+
+  course_id:
+    name: course_id
+    description: The id of the course we're looking for
+    in: path
+    required: true
+    type: integer
+
